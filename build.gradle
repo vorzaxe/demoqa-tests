@@ -7,5 +7,7 @@ repositories {
 }
 
 dependencies {
-    TestImplementation ()
+    TestImplementation(
+            "org.junit.jupiter:junit-jupiter:5.9.1"
+    )
 }
