@@ -33,8 +33,7 @@ public class Test1 {
         $(".sidebar-list").shouldHave(text("Мы помогаем"));
         $(".sidebar-list").shouldHave(text("Задать вопрос"));
 
-        $(byText("История компании")).click();
-
+        $(".sidebar-list").$(byText("История компании")).click();
 
     }
 }
