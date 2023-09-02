@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.by;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.open;
 
@@ -21,25 +22,19 @@ public class Test1 {
     @Test
     void fillFormTest() {
         open("https://www.intertrust.ru/");
+        $(byText("О компании")).click();
 
-        $(".header-nav__menu").shouldHave(text("О компании"));
+        $(".sidebar-list").shouldHave(text("История компании"));
+        $(".sidebar-list").shouldHave(text("Руководство"));
+        $(".sidebar-list").shouldHave(text("Сертификаты и лицензии"));
+        $(".sidebar-list").shouldHave(text("Наши клиенты"));
+        $(".sidebar-list").shouldHave(text("Отзывы клиентов"));
+        $(".sidebar-list").shouldHave(text("Строим открыто"));
+        $(".sidebar-list").shouldHave(text("Мы помогаем"));
+        $(".sidebar-list").shouldHave(text("Задать вопрос"));
 
-        // $(by("#text", "О компании")).click();
+        $(byText("История компании")).click();
 
-//        $(".header-nav row").shouldHave(text("ИСТОРИЯ КОМПАНИИ"));
-//        $(".header-nav row").shouldHave(text("РУКОВОДСТВО"));
-//        $(".header-nav row").shouldHave(text("СЕРТИФИКАТЫ И ЛИЦЕНЗИИ"));
-//        $(".header-nav row").shouldHave(text("НАШИ КЛИЕНТЫ"));
-//        $(".header-nav row").shouldHave(text("ОТЗЫВЫ КЛИЕНТОВ"));
-//        $(".header-nav row").shouldHave(text("СТРОИМ ОТКРЫТО"));
-//        $(".header-nav row").shouldHave(text("МЫ ПОМОГАЕМ"));
-//        $(".header-nav row").shouldHave(text("ЗАДАТЬ ВОПРОС"));
-
-//        $("#submit").click();
-//
-//        $("#output").shouldBe(visible);
-//        $("#output").$("#name").shouldHave((text("Xenia Spectra")));
-//        $("#output #email").shouldHave((text("test_sp@mail.ru")));
 
     }
 }
