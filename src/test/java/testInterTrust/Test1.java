@@ -34,6 +34,12 @@ public class Test1 {
         $(".sidebar-list").shouldHave(text("Задать вопрос"));
 
         $(".sidebar-list").$(byText("История компании")).click();
-
+        $(".sidebar-list").$(byText("Руководство")).click();
+        $(".sidebar-list").$(byText("Сертификаты и лицензии")).click();
+        $(".sidebar-list").$(byText("Наши клиенты")).click();
+        $(".sidebar-list").$(byText("Отзывы клиентов")).click();
+        $(".sidebar-list").$(byText("Строим открыто")).click();
+        $(".sidebar-list").$(byText("Мы помогаем")).click();
+        $(".sidebar-list").$(byText("Задать вопрос")).click();
     }
 }
