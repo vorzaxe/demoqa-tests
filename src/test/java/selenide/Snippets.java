@@ -1,9 +1,9 @@
 package selenide;
 
-import com.codeborne.selenide.*;
-import org.openqa.selenium.By;
+import com.codeborne.selenide.AuthenticationType;
+import com.codeborne.selenide.BasicAuthCredentials;
+import com.codeborne.selenide.Selenide;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebElement;
 
 import static com.codeborne.selenide.CollectionCondition.size;
 import static com.codeborne.selenide.Condition.*;
