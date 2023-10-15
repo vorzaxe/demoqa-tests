@@ -19,7 +19,7 @@ public class TextBoxTests {
 
     @Test
     void fillFormTest() {
-        open("https://demoqa.com/text-box");
+        open("/text-box");
         $(".main-header").shouldHave(text("Text Box")); //класс можно заменить на .
 
         $("#userName").setValue("Xenia Spectra"); //id можно заменить на #

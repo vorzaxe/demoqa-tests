@@ -4,11 +4,7 @@ import com.codeborne.selenide.Configuration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.File;
-
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.by;
+import static com.codeborne.selenide.Condition.*;
 import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 
@@ -18,6 +14,7 @@ public class StudentRegistrationForm {
     static void beforeAll() {
         Configuration.browserSize = "1920x1080";
         Configuration.baseUrl = "https://demoqa.com";
+        Configuration.holdBrowserOpen = true;
     }
 
     @Test
@@ -43,29 +40,38 @@ public class StudentRegistrationForm {
         $("#firstName").setValue(userFirstName);
         $("#lastName").setValue(userLastName);
         $("#userEmail").setValue(userEmail);
-        $("#gender-radio-2").parent().$("label").shouldHave(text(userGender));
-        $("#gender-radio-2").parent().$("label").click();
+//        $("#gender-radio-2").parent().$("label").shouldHave(text(userGender)); //чужой вариант
+//        $("#gender-radio-2").parent().click(); //good
+        $("#genterWrapper").$(byText("Other")).click(); //the best
         $("#userNumber").setValue(userNumber);
         $("#dateOfBirthInput").click();
         $(".react-datepicker__month-container").shouldBe(visible);
         $(".react-datepicker__month-select").selectOption(month);
         $(".react-datepicker__year-select").selectOption(year);
-        $(".react-datepicker__month").$$(".react-datepicker__week")
-                .get(1).$$(".react-datepicker__day").findBy(text("13")).click();
+// <div class="react-datepicker__day__030 react-datepicker__day--outside-month">30</div> //30-е число предыдущего месяца
+// <div class="react-datepicker__day__030                                      >30</div> //30-е число текущего месяца
+        $(".react-datepicker__day--030:not(.react-datepicker__day--outside-month)").click(); //вариант из разбора домашки
+//        $(".react-datepicker__month").$$(".react-datepicker__week")
+//                .get(1).$$(".react-datepicker__day").findBy(text("13")).click(); //чужой вариант
         $("#subjectsInput").setValue("Computer Science").pressEnter();
-        $(byText("Reading")).click();
+        $("#subjectsInput").$(byText("Sports")).click(); //вариант из разбора домашки
+//        $(byText("Reading")).click(); //мой вариант
+
+        $("#uploadPicture").uploadFromClasspath("img/1.png"); //вариант из разбора домашки; работает только для элемента с type=file
+//        File cv = new File("src/test/resources/img/1.png"); //более длинный вариант
+//        $("#uploadPicture").uploadFile(cv); //более длинный вариант
+
         $("#currentAddress").setValue(currentAddress);
 
-        File cv = new File("C:\\Users\\Xenia Vorza\\Documents\\" + userFileName);
-        $("#uploadPicture").uploadFile(cv);
-
         $("#state").click();
-        $(byText(userState)).click();
+//        $(byText(userState)).click(); //1-ый способ (по названию города)
+        $("#react-select-3-option-2").click(); //узнали id элемента списка с помощью BreakPoint (DevTools)
         $("#city").click();
         $(byText(userCity)).click();
 
         $("#submit").click();
 
+        $(".modal-dialog").should(appear); //доп. проверка из разбора домашки
         $(".modal-header").shouldHave(text("Thanks for submitting the form"));
         $(".table").$(byText("Student Name")).sibling(0).shouldHave(text(userFirstName + " " + userLastName));
         $(".table").$(byText("Student Email")).sibling(0).shouldHave(text(userEmail));
