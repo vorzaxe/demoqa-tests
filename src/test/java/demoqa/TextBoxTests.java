@@ -19,18 +19,21 @@ public class TextBoxTests {
 
     @Test
     void fillFormTest() {
+        String userName = "Xenia Spectra";
+        String eMail = "test_sp@mail.ru";
+
         open("/text-box");
         $(".text-center").shouldHave(text("Text Box")); //класс можно заменить на .
 
-        $("#userName").setValue("Xenia Spectra"); //id можно заменить на #
-        $("#userEmail").setValue("test_sp@mail.ru");
-        $("#currentAddress").setValue("Russia, Omsk city, Severnaya 30-ya, 42/2");
-        $("#permanentAddress").setValue("USA, Nevada State, Vernon, Main St, 9");
+        $("#userName").setValue(userName); //id можно заменить на #
+        $("#userEmail").setValue(eMail);
+        $("#currentAddress").setValue("Russia, Omsk city, Severnaya 30-ya, 38/2");
+        $("#permanentAddress").setValue("USA, Nevada State, Vernon, Main St, 5");
         $("#submit").click();
 
         $("#output").shouldBe(visible);
-        $("#output").$("#name").shouldHave((text("Xenia Spectra")));
-        $("#output #email").shouldHave((text("test_sp@mail.ru")));
+        $("#output").$("#name").shouldHave(text(userName));
+        $("#output #email").shouldHave(text(eMail));
 
     }
 
