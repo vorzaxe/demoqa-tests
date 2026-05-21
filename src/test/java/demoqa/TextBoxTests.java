@@ -20,7 +20,7 @@ public class TextBoxTests {
     @Test
     void fillFormTest() {
         open("/text-box");
-        $(".main-header").shouldHave(text("Text Box")); //класс можно заменить на .
+        $(".text-center").shouldHave(text("Text Box")); //класс можно заменить на .
 
         $("#userName").setValue("Xenia Spectra"); //id можно заменить на #
         $("#userEmail").setValue("test_sp@mail.ru");
