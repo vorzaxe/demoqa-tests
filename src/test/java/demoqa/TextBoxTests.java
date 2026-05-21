@@ -24,7 +24,7 @@ public class TextBoxTests {
 
         $("#userName").setValue("Xenia Spectra"); //id можно заменить на #
         $("#userEmail").setValue("test_sp@mail.ru");
-        $("#currentAddress").setValue("Russia, Omsk city, Severnaya 30-ya, 45/2");
+        $("#currentAddress").setValue("Russia, Omsk city, Severnaya 30-ya, 42/2");
         $("#permanentAddress").setValue("USA, Nevada State, Vernon, Main St, 9");
         $("#submit").click();
 
