@@ -20,12 +20,12 @@ public class TextBoxTests {
     @Test
     void fillFormTest() {
         open("/text-box");
-        $(".main-header").shouldHave(text("Text Box")); //класс можно заменить на .
+        $(".text-center").shouldHave(text("Text Box")); //класс можно заменить на .
 
         $("#userName").setValue("Xenia Spectra"); //id можно заменить на #
         $("#userEmail").setValue("test_sp@mail.ru");
-        $("#currentAddress").setValue("Russia, Omsk city, Severnaya 30-ya, 45/1");
-        $("#permanentAddress").setValue("USA, Nevada State, Vernon, Main St, 5");
+        $("#currentAddress").setValue("Russia, Omsk city, Severnaya 30-ya, 38/2");
+        $("#permanentAddress").setValue("USA, Nevada State, Vernon, Main St, 9");
         $("#submit").click();
 
         $("#output").shouldBe(visible);
