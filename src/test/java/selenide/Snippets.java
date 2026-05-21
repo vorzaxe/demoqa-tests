@@ -1,12 +1,16 @@
 package selenide;
 
-import com.codeborne.selenide.AuthenticationType;
-import com.codeborne.selenide.BasicAuthCredentials;
-import com.codeborne.selenide.Selenide;
+import com.codeborne.selenide.*;
+import org.openqa.selenium.Cookie;
 import org.openqa.selenium.Keys;
 
-import static com.codeborne.selenide.CollectionCondition.size;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.time.Duration;
+
+import static com.codeborne.selenide.CollectionCondition.*;
 import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Condition.empty;
 import static com.codeborne.selenide.Selectors.*;
 import static com.codeborne.selenide.Selenide.*;
 
@@ -27,21 +31,27 @@ public class Snippets {
         executeJavaScript("sessionStorage.clear()");    // no Selenide command for this yet
 
         Selenide.confirm(); // OK in alert dialogs
-        Selenide.dismiss(); // Cancel in alerts dialogs
+        Selenide.dismiss(); // Cancel in alerts dialogs (закрытие или отмена диалогов)
 
         Selenide.closeWindow(); // close active tab
         Selenide.closeWebDriver();  // close browser completely
 
-        Selenide.switchTo().frame("new");
-        Selenide.switchTo().defaultContent();   // return from frame
+        Selenide.switchTo().frame("new"); // frame -- страничка в страничке + вложенность мб нескольких уровней
+        // всё, что внутри фрейма, selenide не найдет, поэтому нужно сначала переключиться на фрейм, а потом обратно
+        Selenide.switchTo().defaultContent();   // return from frame back to the main DOM
+
+        Selenide.switchTo().window("The Internet"); // переключение между открытыми окнами
+
+        var cookie = new Cookie("foo", "bar"); // создание cookie на страничку, затем надо перезагрузить
+        WebDriverRunner.getWebDriver().manage().addCookie(cookie);
     }
 
     void selectors_examples() {
 
         $("div").click();
-        element("div").click();
+        element("div").click(); // для языка Kotlin, ибо $ там зарезервирован
 
-        $("div", 2).click();    // the third div
+        $("div", 2).click();    // the third div (т.к. счет начинается с 0)
 
         $x("//h1/div").click();
         $(byXpath("//h1/div")).click();
@@ -52,14 +62,14 @@ public class Snippets {
         $(byTagAndText("div", "full text"));
         $(withTagAndText("div", "ull tex"));
 
-        $("").parent();
+        $("").parent(); // родитель
         $("").sibling(1);
         $("").preceding(1);
         $("").closest("div");
         $("").ancestor("div");  // the same as closest
-        $("div:last-child");
+        $("div:last-child"); // псевдоселекторы (этот берет последнего ребенка)
 
-        $("div").$("h1").find(byText("abc")).click();
+        $("div").$("h1").find(byText("abc")).click(); // ищем div, внутри него h1 и т.д.
         // very optional
         $(byAttribute("abc", "x")).click();
         $("[abc=x]").click();
@@ -79,14 +89,14 @@ public class Snippets {
 
         $("").hover();  // поднести мышь и не кликать
 
-        $("").setValue("text");
-        $("").append("text");
-        $("").clear();  // не всегда срабатывает (у пользователя может не быть кнопки clear)
+        $("").setValue("text"); // удаляет всё в поле и пишет заново
+        $("").append("text"); // добавляет текст в конец поля
+        $("").clear();  // удаляет значение, не всегда срабатывает (у пользователя может не быть кнопки clear)
         $("").setValue(""); // clear
 
         $("div").sendKeys("c"); // hotkey c on element
-        actions().sendKeys("c").perform();  // hotkey c on whole application
-        actions().sendKeys(Keys.chord(Keys.CONTROL, "f")).perform();    // Ctrl + f
+        actions().sendKeys("c").perform(); // hotkey c on whole application
+        actions().sendKeys(Keys.chord(Keys.CONTROL, "f")).perform(); // Ctrl + f
         $("html").sendKeys(Keys.chord(Keys.CONTROL, "f"));
 
         $("").pressEnter();
@@ -101,6 +111,19 @@ public class Snippets {
         $("").selectRadio("radio_options");
     }
 
+    void assertions_examples() {
+        $("").shouldBe(visible);
+        $("").shouldNotBe(visible);
+        $("").shouldHave(text("abc"));
+        $("").shouldNotHave(text("abc"));
+        $("").should(appear);
+        $("").shouldNot(appear);
+
+        // longer timeout, пример -- поиск билетов на aviasales, когда стандартного таймаута не хватит
+        $("").shouldBe(visible, Duration.ofSeconds(30));
+
+    }
+
     void conditions_examples() {
 
         $("").shouldBe(visible);
@@ -110,13 +133,27 @@ public class Snippets {
         $("").shouldHave(exactText("abc"));
         $("").shouldHave(textCaseSensitive("abc"));
         $("").shouldHave(exactTextCaseSensitive("abc"));
-        $("").shouldHave(matchText("[0-9]abc$"));
+        $("").should(matchText("[0-9]abc$"));
 
         $("").shouldHave(cssClass("red"));
         $("").shouldHave(cssValue("font-size", "12"));
 
         $("").shouldHave(value("25"));
         $("").shouldHave(exactValue("25"));
+        $("").shouldBe(empty);
+
+        $("").shouldHave(attribute("disabled"));
+        $("").shouldHave(attribute("name", "example"));
+        $("").shouldHave(attributeMatching("name", "[0-9]abc$"));
+
+        $("").shouldBe(checked); //for checkboxes
+
+        // Warning! Only checks if it is in DOM, not if it is visible! You don't need it in most tests!
+        $("").should(exist);
+
+        // Warning! Checks only the "disabled" attribute! Will not work with many modern frameworks
+        $("").shouldBe(disabled);
+        $("").shouldBe(enabled);
     }
 
     void collections_examples() {
@@ -130,7 +167,44 @@ public class Snippets {
         $$("div").excludeWith(text("123")).shouldHave(size(1));
 
         $$("div").first().click();
-        $$("div").first().click();
+        elements("div").first().click();
+        // $("div").click();
+        $$("div").last().click();
+        $$("div").get(1).click(); // the second! (start with 0)
+        $("div", 1).click(); // same as previous
+        $$("div").findBy(text("123")).click(); // finds first
+
+        // assertions
+        $$("").shouldHave(size(0));
+        $$("").shouldBe(CollectionCondition.empty); // the same
+
+        $$("").shouldHave(texts("Alfa", "Beta", "Gamma"));
+        $$("").shouldHave(exactTexts("Alfa", "Beta", "Gamma"));
+
+        $$("").shouldHave(textsInAnyOrder("Beta", "Gamma", "Alfa"));
+        $$("").shouldHave(exactTextsCaseSensitiveInAnyOrder("Beta", "Gamma", "Alfa"));
+
+        $$("").shouldHave(itemWithText("Gamma")); // only one text
+
+        $$("").shouldHave(sizeGreaterThan(0));
+        $$("").shouldHave(sizeGreaterThanOrEqual(1));
+        $$("").shouldHave(sizeLessThan(3));
+        $$("").shouldHave(sizeLessThanOrEqual(2));
+
+    }
+
+    void file_operation_examples() throws FileNotFoundException {
+
+        File file1 = $("a.fileLink").download(); // only for <a href=".."> links
+        File file2 = $("div").download(DownloadOptions.using(FileDownloadMode.FOLDER)); // more common options,
+        // but may have problems with Grid/Selenoid
+
+        File file = new File("src/test/resources/readme.txt");
+        $("#file-upload").uploadFile(file);
+        $("#file-upload").uploadFromClasspath("readme.txt");
+        // don't forget to submit!
+        $("uploadButton").click();
+
     }
 
     void javascript_examples() {
